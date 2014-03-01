@@ -14,6 +14,7 @@ public class Dataset  {
 	private Set<DatasetRecord> records;
 	private String classname;
 	private String emailContent;
+	private Date lastProcessDate;
 	
 	public Dataset() {
 		this.inputs = new HashSet<DatasetInput>();
@@ -78,6 +79,14 @@ public class Dataset  {
 
 	public void setEmailContent(String emailContent) {
 		this.emailContent = emailContent;
+	}
+
+	public Date getLastProcessDate() {
+		return lastProcessDate;
+	}
+
+	public void setLastProcessDate(Date lastProcessDate) {
+		this.lastProcessDate = lastProcessDate;
 	}
 	
 }

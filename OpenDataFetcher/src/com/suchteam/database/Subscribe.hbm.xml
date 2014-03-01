@@ -9,6 +9,9 @@
         <property name="emailAddress" column="email_address"/>
         <property name="sentDate" column="sent_date"/>
  		<property name="unsubscribed" column="unsubscribed"/>
+ 		<property name="lastProcessedDate" column="last_processed_date"/>
+ 		<property name="shouldLookAtPastData" column="should_look_at_past_data"/>
+		<property name="createdDate" column="created_date"/>
         <many-to-one class="com.suchteam.database.Dataset" name="dataset" column="dataset_id"/>
         <set name="assertions" table="subscribe_assertion" cascade="all">
             <key>

@@ -9,6 +9,7 @@
         <property name="value" column="value"/>
         <property name="assertion" column="assertion"/>
         <many-to-one class="com.suchteam.database.Subscribe" name="subscribe" column="subscribe_id"/>
-        </class>
+    	<many-to-one class="com.suchteam.database.DatasetInput" name="input" column="dataset_input_id"/>
+    </class>
 
 </hibernate-mapping>
