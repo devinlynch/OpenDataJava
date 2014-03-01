@@ -135,7 +135,7 @@ CREATE TABLE `dataset_value` (
   `dataset_value_id` int(11) NOT NULL AUTO_INCREMENT,
   `dataset_record_id` int(11) NOT NULL,
   `dataset_input_id` int(11) NOT NULL,
-  `value` varchar(250) NOT NULL,
+  `value` varchar(5000) NOT NULL,
   `last_updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`dataset_value_id`),
   KEY `dataset_value_ibfk_1_idx` (`dataset_record_id`),
