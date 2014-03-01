@@ -11,6 +11,7 @@ public class DatasetRecord {
 	private Set<DatasetValue> values;
 	private Date creationDate;
 	private Set<SubscribeNotified> notifies;
+	private String externalId;
 	
 	public DatasetRecord() {
 		this.values = new HashSet<DatasetValue>();
@@ -54,6 +55,14 @@ public class DatasetRecord {
 	
 	public void addNotify(SubscribeNotified notify) {
 		getNotifies().add(notify);
+	}
+
+	public String getExternalId() {
+		return externalId;
+	}
+
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
 	}
 	
 

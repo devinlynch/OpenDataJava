@@ -11,6 +11,8 @@
         <property name="lastMessageTime" column="last_message_time"/>
         <property name="classname" column="class_name"/>
         <property name="emailContent" column="email_content"></property>
+        <property name="lastProcessDate" column="last_process"></property>
+        
         <set name="inputs" table="database_input" cascade="all" lazy="false">
             <key>
                 <column name="dataset_id" not-null="true" />

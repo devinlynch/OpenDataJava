@@ -6,7 +6,7 @@
         <id name="datasetRecordId" column="dataset_record_id">
             <generator class="native" />
         </id>
-        
+        <property name="externalId" column="external_id"></property>
         <many-to-one class="com.suchteam.database.Dataset" name="dataset" column="dataset_id"/>
   
         <set name="values" table="dataset_value" cascade="all">

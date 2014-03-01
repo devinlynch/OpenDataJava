@@ -1,5 +1,7 @@
 package com.suchteam.database;
 
+import java.util.List;
+
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -83,5 +85,20 @@ public class DataAccess {
 	@SuppressWarnings("unchecked")
 	public <T>T get(Class<T> type, String id) {
 		return (T) getSession().get(type, id);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getDataSetIds() {
+		return (List<String>) getSession()
+				.createSQLQuery("select cast(dataset_id as CHAR(50)) from dataset")
+				.list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getDatasetSubscriberIds(String datasetId) {
+		return (List<String>) getSession()
+				.createSQLQuery("select cast(subscribe_id as CHAR(50)) from subscribe where dataset_id = :dsid and unsubscribed=0")
+				.setParameter("dsid", datasetId)
+				.list();
 	}
 }
