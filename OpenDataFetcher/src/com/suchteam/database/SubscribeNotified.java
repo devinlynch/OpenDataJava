@@ -8,6 +8,9 @@ public class SubscribeNotified {
 	private Subscribe subscribe;
 	private DatasetRecord datasetRecord;
 	private Date notificationDate;
+	private String content;
+	private String subject;
+	private boolean sent;
 	
 	public String getSubscribeNotifiedId() {
 		return subscribeNotifiedId;
@@ -33,4 +36,24 @@ public class SubscribeNotified {
 	public void setNotificationDate(Date notificationDate) {
 		this.notificationDate = notificationDate;
 	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+	public boolean isSent() {
+		return sent;
+	}
+	public void setSent(boolean sent) {
+		this.sent = sent;
+	}
+
+	
 }

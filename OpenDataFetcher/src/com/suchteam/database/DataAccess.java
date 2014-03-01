@@ -101,4 +101,9 @@ public class DataAccess {
 				.setParameter("dsid", datasetId)
 				.list();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getEmailsThatNeedSending() {
+		return (List<String>) getSession().createSQLQuery("select cast(subscribe_notified_id as CHAR(50)) from subscribe_notified where sent = 0").list();
+	}
 }
