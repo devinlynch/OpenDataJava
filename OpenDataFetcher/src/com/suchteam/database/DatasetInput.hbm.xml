@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.suchteam.opendata.DatasetInput" table="dataset_input">
+        <id name="datasetInputId" column="dataset_input_id">
+            <generator class="native" />
+        </id>
+        <property name="name" column="name"/>
+        <many-to-one class="com.suchteam.opendata.DataType" name="dataType" column="data_type_id"/>
+		<many-to-one class="com.suchteam.opendata.Dataset" name="dataset" column="dataset_id"/>  
+
+    </class>
+</hibernate-mapping>

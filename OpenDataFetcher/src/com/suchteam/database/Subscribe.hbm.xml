@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.suchteam.opendata.Subscribe" table="subscribe">
+        <id name="subscribeId" column="subscribe_id">
+            <generator class="native" />
+        </id>
+        <property name="emailAddress" column="email_address"/>
+        <property name="sentDate" column="sent_data"/>
+ 
+        <many-to-one class="com.suchteam.opendata.Dataset"
+        <set name="records" table="dataset_record">
+            <key>
+                <column name="dataset_record_id" not-null="true" />
+            </key>
+            <one-to-many entity-name="com.suchteam.opendata.DatasetRecord"/>
+        </set>
+    </class>
+</hibernate-mapping>

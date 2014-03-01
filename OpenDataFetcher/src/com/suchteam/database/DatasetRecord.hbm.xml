@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.suchteam.opendata.DatasetRecord" table="dataset_record">
+        <id name="datasetRecordId" column="dataset_record_id">
+            <generator class="native" />
+        </id>
+        
+        <many-to-one class="com.suchteam.opendata.Dataset" name="dataset" column="dataset_id"/>
+  
+        <set name="values" table="dataset_record">
+            <key>
+                <column name="dataset_value_id" not-null="true" />
+            </key>
+            <one-to-many entity-name="com.suchteam.opendata.DatasetValue"/>
+        </set>
+    </class>
+</hibernate-mapping>

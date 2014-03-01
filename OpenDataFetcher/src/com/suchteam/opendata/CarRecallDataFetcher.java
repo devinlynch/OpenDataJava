@@ -6,12 +6,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataFetcher {
+import org.w3c.dom.views.AbstractView;
+
+public class CarRecallDataFetcher extends AbstractDataFetcher {
 	
 	
 	 public static void main(String[] args){
+		 CarRecallDataFetcher fetcher = new CarRecallDataFetcher();
+	    fetcher.createDatasetRecords();
+	        
 		
-	    CSVReader reader = null;
+		
+	}
+
+	@Override
+	public void createDatasetRecords() {
+		CSVReader reader = null;
+	    
+	    DatasetRecord tempRecord = null;
 	    
 	    
 		try {
@@ -33,14 +45,15 @@ public class DataFetcher {
 				}
 			}
 			
+			while((nextLine = reader.readNext()) != null){
+				
+			}
 			
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	        
-		
 		
 	}
 	
