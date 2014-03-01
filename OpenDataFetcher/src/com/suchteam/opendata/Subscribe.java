@@ -10,6 +10,7 @@ public class Subscribe {
 	private Date sentDate;
 	private Dataset dataset;
 	private Set<SubscribeAssertion> assertions;
+	private boolean unsubscribed;
 	
 	
 	public String getSubscribeId() {
@@ -41,6 +42,12 @@ public class Subscribe {
 	}
 	public void setAssertions(Set<SubscribeAssertion> assertions) {
 		this.assertions = assertions;
+	}
+	public boolean isUnsubscribed() {
+		return unsubscribed;
+	}
+	public void setUnsubscribed(boolean unsubscribed) {
+		this.unsubscribed = unsubscribed;
 	}
 	
 	

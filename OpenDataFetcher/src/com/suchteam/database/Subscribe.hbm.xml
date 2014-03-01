@@ -7,14 +7,14 @@
             <generator class="native" />
         </id>
         <property name="emailAddress" column="email_address"/>
-        <property name="sentDate" column="sent_data"/>
- 
-        <many-to-one class="com.suchteam.opendata.Dataset"
-        <set name="records" table="dataset_record">
+        <property name="sentDate" column="sent_date"/>
+ 		<property name="unsubscribed" column="unsubscribed"/>
+        <many-to-one class="com.suchteam.opendata.Dataset" name="dataset" column="dataset_id"/>
+        <set name="assertions" table="subscribe_assertions">
             <key>
-                <column name="dataset_record_id" not-null="true" />
+                <column name="subscribe_assertion_id" not-null="true" />
             </key>
-            <one-to-many entity-name="com.suchteam.opendata.DatasetRecord"/>
+            <one-to-many entity-name="com.suchteam.opendata.SubscribeAssertion"/>
         </set>
     </class>
 </hibernate-mapping>

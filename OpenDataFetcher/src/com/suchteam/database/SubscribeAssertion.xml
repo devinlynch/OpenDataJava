@@ -1,1 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.suchteam.opendata.SubscribeNotified" table="subscribe_notified">
+        <id name="subscribeNotifiedId" column="subscribe_notified_id">
+            <generator class="native" />
+        </id>
+        <property name="value" column="value"/>
+        <property name="assertion" column="assertion"/>
+        <many-to-one class="com.suchteam.opendata.Subscribe" name="subscribe" column="subscribe"/>
+        </class>
+
+</hibernate-mapping>
