@@ -13,6 +13,9 @@ public class Subscribe {
 	private Set<SubscribeAssertion> assertions;
 	private boolean unsubscribed;
 	private Set<SubscribeNotified> notifies;
+	private boolean shouldLookAtPastData;
+	private Date lastProcessedDate;
+	private Date createdDate;
 	
 	public Subscribe() {
 		this.assertions = new HashSet<SubscribeAssertion>();
@@ -68,5 +71,29 @@ public class Subscribe {
 	
 	public void addNotify(SubscribeNotified notify) {
 		getNotifies().add(notify);
+	}
+
+	public boolean isShouldLookAtPastData() {
+		return shouldLookAtPastData;
+	}
+
+	public void setShouldLookAtPastData(boolean shouldLookAtPastData) {
+		this.shouldLookAtPastData = shouldLookAtPastData;
+	}
+
+	public Date getLastProcessedDate() {
+		return lastProcessedDate;
+	}
+
+	public void setLastProcessedDate(Date lastProcessedDate) {
+		this.lastProcessedDate = lastProcessedDate;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 }

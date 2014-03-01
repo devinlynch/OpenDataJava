@@ -31,7 +31,7 @@ public class DatabaseTests {
 		SubscribeNotified notified = access.get(SubscribeNotified.class, "1");
 		
 		
-		Dataset ds = new Dataset();
+		/*Dataset ds = new Dataset();
 		ds.setClassname("Test");
 		ds.setName("test");
 		access.save(ds);
@@ -42,6 +42,12 @@ public class DatabaseTests {
 		i1.setName("c1");
 		ds.addInput(i1);
 		
+		DatasetInput i2 = new DatasetInput();
+		i2.setDataset(ds);
+		i2.setDataType(DataType.STRING_DATA_TYPE);
+		i2.setName("c2");
+		ds.addInput(i2);
+		
 		DatasetRecord r1 = new DatasetRecord();
 		DatasetValue v1 = new DatasetValue();
 		v1.setDatasetInput(i1);
@@ -49,9 +55,15 @@ public class DatabaseTests {
 		v1.setDatasetRecord(r1);
 		r1.addValue(v1);
 		
+		DatasetValue v2 = new DatasetValue();
+		v2.setDatasetInput(i2);
+		v2.setValue("bar");
+		v2.setDatasetRecord(r1);
+		r1.addValue(v2);
+		
 		ds.addRecord(r1);
 		
-		access.save(ds);
+		access.save(ds);*/
 		
 		access.commit();
 	}

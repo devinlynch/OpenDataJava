@@ -6,6 +6,7 @@ public class SubscribeAssertion {
 	private String value;
 	private String assertion;
 	private Subscribe subscribe;
+	private DatasetInput input;
 	
 	public String getValue() {
 		return value;
@@ -30,6 +31,12 @@ public class SubscribeAssertion {
 	}
 	public void setSubscribeAssertionId(String subscribeAssertionId) {
 		this.subscribeAssertionId = subscribeAssertionId;
+	}
+	public DatasetInput getInput() {
+		return input;
+	}
+	public void setInput(DatasetInput input) {
+		this.input = input;
 	}
 	
 	
