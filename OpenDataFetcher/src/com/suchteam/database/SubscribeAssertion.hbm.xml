@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.suchteam.database.SubscribeAssertion" table="subscribe_assertion">
+        <id name="subscribeAssertionId" column="subscribe_assertion_id">
+            <generator class="native" />
+        </id>
+        <property name="value" column="value"/>
+        <property name="assertion" column="assertion"/>
+        <many-to-one class="com.suchteam.database.Subscribe" name="subscribe" column="subscribe_id"/>
+        </class>
+
+</hibernate-mapping>

@@ -2,13 +2,13 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.suchteam.opendata.SubscribeAssertion" table="subscribe_assertion">
-        <id name="subscribeAssertionId" column="subscribe_assertion_id">
+    <class name="com.suchteam.database.SubscribeNotified" table="subscribe_notified">
+        <id name="subscribeNotifiedId" column="subscribe_notified_id">
             <generator class="native" />
         </id>
-        <property name="value" column="value"/>
-       <many-to-one class="com.suchteam.opendata.Subscribe" name="subscribe" column="subscribe_id"/>
-       <many-to-one class="com.suchteam.opendata.DatasetRecord" name="datasetRecord" column="dataset_record"/>
+       <property name="notificationDate" column="notification_date"/>
+       <many-to-one class="com.suchteam.database.Subscribe" name="subscribe" column="subscribe_id"/>
+       <many-to-one class="com.suchteam.database.DatasetRecord" name="datasetRecord" column="dataset_record_id"/>
       
       </class>
 

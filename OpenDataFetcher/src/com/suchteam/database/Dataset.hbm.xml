@@ -2,25 +2,26 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.suchteam.opendata.Dataset" table="dataset">
+    <class name="com.suchteam.database.Dataset" table="dataset">
         <id name="datasetId" column="dataset_id">
             <generator class="native" />
         </id>
         <property name="name" column="name"/>
         <property name="processFrequency" column="process_frequency"/>
         <property name="lastMessageTime" column="last_message_time"/>
-        <property name="classname" column="classname"/>
-        <set name="inputs" table="database_input">
+        <property name="classname" column="class_name"/>
+        <property name="emailContent" column="email_content"></property>
+        <set name="inputs" table="database_input" cascade="all">
             <key>
-                <column name="dataset_input_id" not-null="true" />
+                <column name="dataset_id" not-null="true" />
             </key>
-            <one-to-many entity-name="com.suchteam.opendata.DatasetInput"/>
+            <one-to-many entity-name="com.suchteam.database.DatasetInput"/>
         </set>
-        <set name="records" table="dataset_record">
+        <set name="records" table="dataset_record" cascade="all">
             <key>
-                <column name="dataset_record_id" not-null="true" />
+                <column name="dataset_id" not-null="true" />
             </key>
-            <one-to-many entity-name="com.suchteam.opendata.DatasetRecord"/>
+            <one-to-many entity-name="com.suchteam.database.DatasetRecord"/>
         </set>
     </class>
 </hibernate-mapping>

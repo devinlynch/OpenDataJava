@@ -2,19 +2,26 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.suchteam.opendata.Subscribe" table="subscribe">
+    <class name="com.suchteam.database.Subscribe" table="subscribe">
         <id name="subscribeId" column="subscribe_id">
             <generator class="native" />
         </id>
         <property name="emailAddress" column="email_address"/>
         <property name="sentDate" column="sent_date"/>
  		<property name="unsubscribed" column="unsubscribed"/>
-        <many-to-one class="com.suchteam.opendata.Dataset" name="dataset" column="dataset_id"/>
-        <set name="assertions" table="subscribe_assertions">
+        <many-to-one class="com.suchteam.database.Dataset" name="dataset" column="dataset_id"/>
+        <set name="assertions" table="subscribe_assertion" cascade="all">
             <key>
-                <column name="subscribe_assertion_id" not-null="true" />
+                <column name="subscribe_id" not-null="true" />
             </key>
-            <one-to-many entity-name="com.suchteam.opendata.SubscribeAssertion"/>
+            <one-to-many entity-name="com.suchteam.database.SubscribeAssertion"/>
+        </set>
+        
+        <set name="notifies" table="subscribe_notified" cascade="all">
+            <key>
+                <column name="subscribe_id" not-null="true" />
+            </key>
+            <one-to-many entity-name="com.suchteam.database.SubscribeNotified"/>
         </set>
     </class>
 </hibernate-mapping>

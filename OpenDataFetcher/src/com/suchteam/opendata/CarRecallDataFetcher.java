@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.w3c.dom.views.AbstractView;
 
+import com.suchteam.database.DatasetRecord;
+
 public class CarRecallDataFetcher extends AbstractDataFetcher {
 	
 	

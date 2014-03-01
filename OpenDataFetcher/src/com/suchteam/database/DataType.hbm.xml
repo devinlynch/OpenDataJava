@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.suchteam.opendata.DataType" table="data_type">
+    <class name="com.suchteam.database.DataType" table="data_type">
         <id name="dataTypeId" column="data_type_id">
             <generator class="native" />
         </id>

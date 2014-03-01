@@ -2,13 +2,13 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.suchteam.opendata.DatasetValue" table="dataset_value">
+    <class name="com.suchteam.database.DatasetValue" table="dataset_value">
         <id name="datasetValueId" column="dataset_value_id">
             <generator class="native" />
         </id>
         <property name="value" column="value"/>
         <property name="lastUpdated" column="last_updated"/>
-        <many-to-one class="com.suchteam.opendata.DatasetRecord" name="datasetRecord" column="dataset_record_id" />
-        <many-to-one class="com.suchteam.opendata.DatasetInput" name="datasetInput" column="dataset_input_id" />
+        <many-to-one class="com.suchteam.database.DatasetRecord" name="datasetRecord" column="dataset_record_id" />
+        <many-to-one class="com.suchteam.database.DatasetInput" name="datasetInput" column="dataset_input_id" />
         </class>
 </hibernate-mapping>
