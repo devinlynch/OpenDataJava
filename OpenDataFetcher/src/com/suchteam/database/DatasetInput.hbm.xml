@@ -7,6 +7,7 @@
             <generator class="native" />
         </id>
         <property name="name" column="name"/>
+        <property name="visualName" column="visual_name"></property>
         <many-to-one class="com.suchteam.database.DataType" name="dataType" column="data_type_id"/>
 		<many-to-one class="com.suchteam.database.Dataset" name="dataset" column="dataset_id"/>  
 

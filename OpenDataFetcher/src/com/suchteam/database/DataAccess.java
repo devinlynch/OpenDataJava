@@ -108,4 +108,22 @@ public class DataAccess {
 				.setParameter("dsid", datasetId)
 				.list();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getEmailsThatNeedSending() {
+		return (List<String>) getSession().createSQLQuery("select cast(subscribe_notified_id as CHAR(50)) from subscribe_notified where sent = 0").list();
+	}
+	
+	public DatasetRecord getRecordByExternalIdForDataset(String datasetId, String externalId) {
+		@SuppressWarnings("unchecked")
+		List<DatasetRecord> list = getSession().createQuery("from DatasetRecord where dataset.datasetId = :dsid and externalId like :exId")
+				.setParameter("dsid", datasetId)
+				.setParameter("exId", externalId)
+				.list();
+		
+		if(list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
+	}
 }

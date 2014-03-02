@@ -2,6 +2,7 @@ package com.suchteam.database;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class DatasetRecord {
@@ -66,4 +67,17 @@ public class DatasetRecord {
 	}
 	
 
+	public DatasetValue getValueForInput(DatasetInput input) {
+		Iterator<DatasetValue> it = getValues().iterator();
+		while(it.hasNext()) {
+			DatasetValue v = it.next();
+			if(v.getDatasetInput().getDatasetInputId().equals(input.getDatasetInputId()))
+				return v;
+		}
+		return null;
+	}
+	
+	public void removeAllValues() {
+		getValues().clear();
+	}
 }

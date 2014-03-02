@@ -7,34 +7,35 @@ import java.util.List;
 import org.hibernate.Query;
 
 import com.suchteam.database.DataAccess;
-import com.suchteam.database.Dataset;
+import com.suchteam.database.DataType;
+import com.suchteam.database.DatasetInput;
+import com.suchteam.database.DatasetRecord;
+import com.suchteam.database.DatasetValue;
 import com.suchteam.database.Subscribe;
 import com.suchteam.database.SubscribeAssertion;
+import com.suchteam.database.SubscribeAssertion.AssertionTypes;
 import com.suchteam.database.SubscribeNotified;
 
-public class NotificationProcessor extends Thread {
+public class NotificationProcessor {
 	private DataAccess access;
-	private boolean stopped;
-	
+	private List<String> specificDataSets;
 	
 	public static void main(String[] args) {
 		NotificationProcessor p = new NotificationProcessor();
+		
+		if(args != null && args.length > 0) {
+			List<String> l = new ArrayList<String>();
+			for(String arg : args) {
+				l.add(arg);
+			}
+			p.setSpecificDataSets(l);
+		}
+		
 		p.setAccess(new DataAccess());
 		p.processDataSets();
-	}
-	
-	@Override
-	public void run() {
 		
-		while(!stopped) {
-			processDataSets();
-			
-			try{
-				Thread.sleep(10000);
-			} catch(InterruptedException e) {
-				break;
-			}
-		}
+		
+		p.getAccess().getSession().getSessionFactory().close();
 	}
 	
 	protected void processDataSets() {
@@ -43,6 +44,13 @@ public class NotificationProcessor extends Thread {
 			try{
 				handleDataset(datasetId);
 			} catch(Exception e) {
+				try{
+					if(getAccess().isTransactionActive())
+						getAccess().rollback();
+				} catch(Exception e1) {
+					e1.printStackTrace();
+				}
+				
 				// Stop the current process iteration if something goes wrong
 				e.printStackTrace();
 				break;
@@ -52,25 +60,50 @@ public class NotificationProcessor extends Thread {
 	
 	private void handleDataset(String datasetId) {
 		getAccess().beginTransaction();
-		Dataset dataset = getAccess().get(Dataset.class, datasetId);
-		
-		List<String> subscribeIds = getAccess().getDatasetSubscriberIds(dataset.getDatasetId());
+		List<String> subscribeIds = getAccess().getDatasetSubscriberIds(datasetId);
+		getAccess().commit();
 		
 		for(String subscribeId : subscribeIds) {
-			handleSubscribe(subscribeId);
+			try{
+				getAccess().beginTransaction();
+				handleSubscribe(subscribeId);
+				getAccess().commit();
+			} catch(Exception e) {
+				try{
+					getAccess().rollback();
+				} catch(Exception e1) {
+					e1.printStackTrace();
+				}
+				e.printStackTrace();
+			}
 		}
-		
-		getAccess().commit();
 	}
 	
 	private void handleSubscribe(String subscribeId) {
 		Subscribe subscribe = getAccess().get(Subscribe.class, subscribeId);
+		
+		List<String> recordsToNotifyAbout = getRecordIdsForSubscribeNotifications(subscribe);
+		
+		subscribe.setLastProcessedDate(new Date());
+		getAccess().save(subscribe);
+		
+		if(recordsToNotifyAbout == null || recordsToNotifyAbout.isEmpty()) {
+			// There was no records to notify about
+			return;
+		}
+		
+		for(String id : recordsToNotifyAbout) {
+			generateNotification(subscribe, id);
+		}
+	}
+
+	public List<String> getRecordIdsForSubscribeNotifications(Subscribe subscribe) {
 		Date lastProcessDate = subscribe.getLastProcessedDate();
 		if(lastProcessDate != null){
 			// Non initial process
 			if(subscribe.getLastProcessedDate().after(subscribe.getDataset().getLastProcessDate())) {
 				// The data set hasn't been updated since the last time we processed this subscribe
-				return;
+				return null;
 			}
 		} else {
 			// Initial Process
@@ -86,7 +119,7 @@ public class NotificationProcessor extends Thread {
 		}
 		
 		Query query = getAccess().getSession().createSQLQuery(""
-				+ "select dataset_record_id from" + 
+				+ "select cast(dataset_record_id as CHAR(50)) from" + 
 				"	(SELECT dr.dataset_record_id, count(*) as c FROM " + 
 				"				dataset_record dr " + 
 				"				left join dataset_value dv on dv.dataset_record_id=dr.dataset_record_id " + 
@@ -95,7 +128,7 @@ public class NotificationProcessor extends Thread {
 				"				and " + 
 				"					("+generateAssertionAndClauses(assertions)+
 				"					)" + 
-				"				and dr.dataset_record_id not in (:alreadyNotifiedRecords) ) drinner" + 
+				"				and dr.dataset_record_id not in (:alreadyNotifiedRecords) group by dr.dataset_record_id ) drinner" + 
 				"	where drinner.c >= :numAssertions")
 				.setParameter("lastProcessDate", lastProcessDate)
 				.setParameter("datasetId", subscribe.getDataset().getDatasetId())
@@ -109,8 +142,9 @@ public class NotificationProcessor extends Thread {
 				.setParameter("assertion"+(i+1)+"inputid", assertion.getInput().getDatasetInputId());
 		}
 		
+		@SuppressWarnings("unchecked")
 		List<String> datasetRecords = query.list();
-		System.out.println(datasetRecords);
+		return datasetRecords;
 	}
 	
 	private String generateAssertionAndClauses(List<SubscribeAssertion> assertions) {
@@ -118,7 +152,23 @@ public class NotificationProcessor extends Thread {
 		
 		int i = 1;
 		for(SubscribeAssertion a : assertions) {
-			s = s + "(dv.value = :assertion"+i+"value and dv.dataset_input_id = :assertion"+i+"inputid) ";
+			AssertionTypes type = a.getAssertionType();
+			if(a.getInput().getDataType().getDataTypeId().equals(DataType.STRING_DATA_TYPE.getDataTypeId())) {
+				s = s + "(dv.value = :assertion"+i+"value and dv.dataset_input_id = :assertion"+i+"inputid) ";
+			} else {
+				String assertionChar = "=";
+				if(type == AssertionTypes.GREATER_THAN) {
+					assertionChar = ">";
+				} else if(type == AssertionTypes.GREATER_EQUAL_TO) {
+					assertionChar = ">=";
+				} else if(type == AssertionTypes.LESS_EQUAL_TO) {
+					assertionChar = "<=";
+				} else if(type == AssertionTypes.LESS_THAN) {
+					assertionChar = "<";
+				}
+				s = s + "(dv.value "+assertionChar+" :assertion"+i+"value and dv.dataset_input_id = :assertion"+i+"inputid) ";
+			}
+			
 			if(i != assertions.size()) {
 				s = s + " OR ";
 			}
@@ -129,11 +179,56 @@ public class NotificationProcessor extends Thread {
 	}
 	
 	protected List<String> getDatasetIds() {
+		if(specificDataSets != null)
+			return specificDataSets;
+		
 		getAccess().beginTransaction();
 		List<String> ids = getAccess().getDataSetIds();
 		getAccess().commit();
 		return ids;
 	}
+	
+	
+	public void generateNotification(Subscribe subscribe, String dataSetRecordId) {
+		DatasetRecord record = getAccess().get(DatasetRecord.class, dataSetRecordId);
+		
+		SubscribeNotified notify = new SubscribeNotified();
+		notify.setDatasetRecord(record);
+		notify.setNotificationDate(new Date());
+		notify.setSubscribe(subscribe);
+		
+		String content = replaceVariables(record.getDataset().getEmailContent(), record, subscribe);
+		String subject = record.getDataset().getSubjectContent();
+		if(subject == null)
+			subject = "";
+		
+		notify.setContent(content);
+		notify.setSubject(subject);
+		
+		getAccess().save(notify);
+	}
+	
+	
+	public String replaceVariables(String content, DatasetRecord record, Subscribe subscribe) {
+		if(content == null)
+			return "";
+		
+		for(DatasetInput input : record.getDataset().getInputs()) {
+			DatasetValue val = record.getValueForInput(input);
+			String value="";
+			if(val != null) {
+				value = val.getValue();
+			}
+			content = replaceVariable(content, input.getName(), value);
+		}
+		
+		return content;
+	}
+	
+	protected String replaceVariable(String content, String name, String value) {
+		return content = content.replace("@@"+name+"@@", value);
+	}
+	
 	
 	public DataAccess getAccess() {
 		return access;
@@ -142,11 +237,11 @@ public class NotificationProcessor extends Thread {
 		this.access = access;
 	}
 	
-	public boolean isStopped() {
-		return stopped;
+	public List<String> getSpecificDataSets() {
+		return specificDataSets;
 	}
 
-	public void setStopped(boolean stopped) {
-		this.stopped = stopped;
+	public void setSpecificDataSets(List<String> specificDataSets) {
+		this.specificDataSets = specificDataSets;
 	}
 }

@@ -12,6 +12,7 @@
         <property name="classname" column="class_name"/>
         <property name="emailContent" column="email_content"></property>
         <property name="lastProcessDate" column="last_process"></property>
+        <property name="subjectContent" column="subject_content" />
         
         <set name="inputs" table="database_input" cascade="all" lazy="false">
             <key>

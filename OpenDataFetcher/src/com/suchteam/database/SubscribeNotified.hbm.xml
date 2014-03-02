@@ -7,6 +7,9 @@
             <generator class="native" />
         </id>
        <property name="notificationDate" column="notification_date"/>
+       <property name="content" />
+       <property name="subject" />
+       <property name="sent" />
        <many-to-one class="com.suchteam.database.Subscribe" name="subscribe" column="subscribe_id"/>
        <many-to-one class="com.suchteam.database.DatasetRecord" name="datasetRecord" column="dataset_record_id"/>
       

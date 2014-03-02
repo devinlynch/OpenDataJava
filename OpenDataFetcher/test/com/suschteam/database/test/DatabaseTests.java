@@ -30,6 +30,7 @@ public class DatabaseTests {
 		SubscribeAssertion assertion = access.get(SubscribeAssertion.class, "1");
 		SubscribeNotified notified = access.get(SubscribeNotified.class, "1");
 		
+		access.getSession().createQuery("from DatasetRecord").setParameter("datasetId", "1").list();
 		
 		/*Dataset ds = new Dataset();
 		ds.setClassname("Test");
