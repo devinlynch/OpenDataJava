@@ -17,14 +17,19 @@ public class CarRecallDataFetcher extends AbstractDataFetcher {
 
 	public static void main(String[] args) {
 		CarRecallDataFetcher fetcher = new CarRecallDataFetcher();
-		fetcher.createDatasetRecords();
+		try {
+			fetcher.createDatasetRecords();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
 	@Override
-	public void createDatasetRecords() {
+	public void createDatasetRecords() throws IOException {
 		CSVReader reader = null;
-		
+
 		setAccess(new DataAccess());
 
 		getAccess().beginTransaction();
@@ -40,43 +45,64 @@ public class CarRecallDataFetcher extends AbstractDataFetcher {
 			e.printStackTrace();
 		}
 
-		String[] nextLine;
-		List<String> header = new ArrayList<String>();
+		String[] prevLine = null;
+		String[] nextLine = null;
+
+		while ((nextLine = reader.readNext()) != null) {
+			prevLine = nextLine;
+		}
+
+		getAccess().beginTransaction();
+		String latestRecordId = (String) getAccess()
+				.getLastestRecordForDatasetId("1");
+		getAccess().commit();
 
 		try {
-			if ((nextLine = reader.readNext()) != null) {
-				for (int i = 0; i < nextLine.length; i++) {
-					header.add(nextLine[i]);
-				}
-			}
-
-			while ((nextLine = reader.readNext()) != null) {
-				tempRecord = new DatasetRecord();
-				tempRecord.setDataset(dataset);
-				tempRecord.setCreationDate(new Date());
-				for (int i = 0; i < nextLine.length; i++) {
-					tempValue = new DatasetValue();
-					tempValue.setDatasetInput(getInputForName(dataset, header.get(i)));
-					tempValue.setDatasetRecord(tempRecord);
-					tempValue.setLastUpdated(new Date());
-					tempValue.setValue(nextLine[i]);
-					tempRecord.getValues().add(tempValue);
-				}		
-				getAccess().beginTransaction();
-				getAccess().save(tempRecord);
-				getAccess().commit();
-			}
-
-		} catch (IOException e) {
+			reader = new CSVReader(new FileReader("vrdb_full_monthly.csv"));
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+		List<String> header = new ArrayList<String>();
+
+		if (latestRecordId.equalsIgnoreCase(prevLine[0])) {
+			System.out.println("No new records");
+			return;
+		}
+		
+		nextLine = reader.readNext();
+
+		for (int i = 0; i < nextLine.length; i++) {
+			header.add(nextLine[i]);
+		}
+
+		while ((nextLine = reader.readNext()) != null) {
+				tempRecord = new DatasetRecord();
+				tempRecord.setDataset(dataset);
+				tempRecord.setCreationDate(new Date());
+				tempRecord.setExternalId(nextLine[0]);
+				for (int i = 0; i < nextLine.length; i++) {
+					tempValue = new DatasetValue();
+					tempValue.setDatasetInput(getInputForName(dataset,
+							header.get(i)));
+					if (tempValue.getDatasetInput() != null) {
+						tempValue.setDatasetRecord(tempRecord);
+						tempValue.setLastUpdated(new Date());
+						tempValue.setValue(nextLine[i]);
+						tempRecord.getValues().add(tempValue);
+					}
+				}
+				getAccess().beginTransaction();
+				getAccess().save(tempRecord);
+				getAccess().commit();
+		}
+
 	}
-	
-	public DatasetInput getInputForName(Dataset dataset, String name){
-		for(DatasetInput i : dataset.getInputs()){
-			if(i.getName().equalsIgnoreCase(name)){
+
+	public DatasetInput getInputForName(Dataset dataset, String name) {
+		for (DatasetInput i : dataset.getInputs()) {
+			if (i.getName().equalsIgnoreCase(name)) {
 				return i;
 			}
 		}

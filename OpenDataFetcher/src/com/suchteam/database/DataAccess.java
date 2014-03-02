@@ -2,6 +2,8 @@ package com.suchteam.database;
 
 import java.util.List;
 
+import com.suchteam.opendata.*;
+
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -85,6 +87,11 @@ public class DataAccess {
 	@SuppressWarnings("unchecked")
 	public <T>T get(Class<T> type, String id) {
 		return (T) getSession().get(type, id);
+	}
+	
+	public Object getLastestRecordForDatasetId(String datasetId) {
+		return (String)  getSession().createSQLQuery("select external_id from dataset_record where dataset_id = :datasetId" +
+				" order by external_id desc limit 1").setParameter("datasetId", datasetId).uniqueResult();
 	}
 	
 	@SuppressWarnings("unchecked")
