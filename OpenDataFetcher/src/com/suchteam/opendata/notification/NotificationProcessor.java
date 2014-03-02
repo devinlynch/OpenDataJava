@@ -7,11 +7,13 @@ import java.util.List;
 import org.hibernate.Query;
 
 import com.suchteam.database.DataAccess;
+import com.suchteam.database.DataType;
 import com.suchteam.database.DatasetInput;
 import com.suchteam.database.DatasetRecord;
 import com.suchteam.database.DatasetValue;
 import com.suchteam.database.Subscribe;
 import com.suchteam.database.SubscribeAssertion;
+import com.suchteam.database.SubscribeAssertion.AssertionTypes;
 import com.suchteam.database.SubscribeNotified;
 
 public class NotificationProcessor {
@@ -126,7 +128,7 @@ public class NotificationProcessor {
 				"				and " + 
 				"					("+generateAssertionAndClauses(assertions)+
 				"					)" + 
-				"				and dr.dataset_record_id not in (:alreadyNotifiedRecords) ) drinner" + 
+				"				and dr.dataset_record_id not in (:alreadyNotifiedRecords) group by dr.dataset_record_id ) drinner" + 
 				"	where drinner.c >= :numAssertions")
 				.setParameter("lastProcessDate", lastProcessDate)
 				.setParameter("datasetId", subscribe.getDataset().getDatasetId())
@@ -149,8 +151,24 @@ public class NotificationProcessor {
 		String s ="";
 		
 		int i = 1;
-		for(@SuppressWarnings("unused") SubscribeAssertion a : assertions) {
-			s = s + "(dv.value = :assertion"+i+"value and dv.dataset_input_id = :assertion"+i+"inputid) ";
+		for(SubscribeAssertion a : assertions) {
+			AssertionTypes type = a.getAssertionType();
+			if(a.getInput().getDataType().getDataTypeId().equals(DataType.STRING_DATA_TYPE.getDataTypeId())) {
+				s = s + "(dv.value = :assertion"+i+"value and dv.dataset_input_id = :assertion"+i+"inputid) ";
+			} else {
+				String assertionChar = "=";
+				if(type == AssertionTypes.GREATER_THAN) {
+					assertionChar = ">";
+				} else if(type == AssertionTypes.GREATER_EQUAL_TO) {
+					assertionChar = ">=";
+				} else if(type == AssertionTypes.LESS_EQUAL_TO) {
+					assertionChar = "<=";
+				} else if(type == AssertionTypes.LESS_THAN) {
+					assertionChar = "<";
+				}
+				s = s + "(dv.value "+assertionChar+" :assertion"+i+"value and dv.dataset_input_id = :assertion"+i+"inputid) ";
+			}
+			
 			if(i != assertions.size()) {
 				s = s + " OR ";
 			}

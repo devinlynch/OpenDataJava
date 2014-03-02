@@ -76,4 +76,8 @@ public class DatasetRecord {
 		}
 		return null;
 	}
+	
+	public void removeAllValues() {
+		getValues().clear();
+	}
 }

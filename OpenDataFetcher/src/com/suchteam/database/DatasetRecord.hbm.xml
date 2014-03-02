@@ -9,7 +9,7 @@
         <property name="externalId" column="external_id"></property>
         <many-to-one class="com.suchteam.database.Dataset" name="dataset" column="dataset_id"/>
   
-        <set name="values" table="dataset_value" cascade="all">
+        <set name="values" table="dataset_value" cascade="all,delete-orphan">
             <key>
                 <column name="dataset_record_id" not-null="true" />
             </key>

@@ -2,6 +2,8 @@ package com.suchteam.database;
 
 import java.util.List;
 
+import com.suchteam.opendata.*;
+
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -87,6 +89,11 @@ public class DataAccess {
 		return (T) getSession().get(type, id);
 	}
 	
+	public Object getLastestRecordForDatasetId(String datasetId) {
+		return (String)  getSession().createSQLQuery("select external_id from dataset_record where dataset_id = :datasetId" +
+				" order by external_id desc limit 1").setParameter("datasetId", datasetId).uniqueResult();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<String> getDataSetIds() {
 		return (List<String>) getSession()
@@ -105,5 +112,18 @@ public class DataAccess {
 	@SuppressWarnings("unchecked")
 	public List<String> getEmailsThatNeedSending() {
 		return (List<String>) getSession().createSQLQuery("select cast(subscribe_notified_id as CHAR(50)) from subscribe_notified where sent = 0").list();
+	}
+	
+	public DatasetRecord getRecordByExternalIdForDataset(String datasetId, String externalId) {
+		@SuppressWarnings("unchecked")
+		List<DatasetRecord> list = getSession().createQuery("from DatasetRecord where dataset.datasetId = :dsid and externalId like :exId")
+				.setParameter("dsid", datasetId)
+				.setParameter("exId", externalId)
+				.list();
+		
+		if(list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
 	}
 }

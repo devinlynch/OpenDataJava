@@ -6,7 +6,7 @@ public class DatasetInput {
 	private String name;
 	private DataType dataType;
 	private Dataset dataset;
-	
+	private String visualName;
 	
 	public String getDatasetInputId() {
 		return datasetInputId;
@@ -31,6 +31,12 @@ public class DatasetInput {
 	}
 	public void setDataset(Dataset dataset) {
 		this.dataset = dataset;
+	}
+	public String getVisualName() {
+		return visualName;
+	}
+	public void setVisualName(String visualName) {
+		this.visualName = visualName;
 	}
 	
 	
