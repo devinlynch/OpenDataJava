@@ -21,7 +21,7 @@ public class NotificationProcessor {
 	public static void main(String[] args) {
 		NotificationProcessor p = new NotificationProcessor();
 		
-		if(args != null) {
+		if(args != null && args.length > 0) {
 			List<String> l = new ArrayList<String>();
 			for(String arg : args) {
 				l.add(arg);
@@ -33,6 +33,7 @@ public class NotificationProcessor {
 		p.processDataSets();
 		
 		
+		p.getAccess().getSession().getSessionFactory().close();
 	}
 	
 	protected void processDataSets() {

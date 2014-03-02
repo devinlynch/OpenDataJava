@@ -8,6 +8,7 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -68,7 +69,19 @@ public class EmailSender extends Thread {
 		String content = notify.getContent();
 		String subject = notify.getSubject();
 		String emailAddress = notify.getSubscribe().getEmailAddress();
-		actuallySendEmail(content, subject, emailAddress);
+		
+		boolean didSend = false;
+		try{
+			actuallySendEmail(content, subject, emailAddress);
+			didSend=true;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(didSend) {
+			notify.setSent(true);
+			getAccess().save(notify);
+		}
 		
 		getAccess().commit();
 	}
@@ -89,22 +102,18 @@ public class EmailSender extends Thread {
 		return session;
 	}
 	
-	protected void actuallySendEmail(String content, String subject, String emailAddress) {
-		try {
-			Message message = new MimeMessage(getSession());
-			message.setFrom(new InternetAddress("canadaopendata@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO,
-				InternetAddress.parse(emailAddress));
-			message.setSubject(subject);
-			message.setText(content);
+	protected void actuallySendEmail(String content, String subject, String emailAddress) throws Exception {
+		Message message = new MimeMessage(getSession());
+		message.setFrom(new InternetAddress("canadaopendata@gmail.com"));
+		message.setRecipients(Message.RecipientType.TO,
+		InternetAddress.parse(emailAddress));
+		message.setSubject(subject);
+		message.setText(content);
  
-			Transport.send(message);
+		Transport.send(message);
  
-			System.out.println("Sent email to "+ emailAddress);
+		System.out.println("Sent email to "+ emailAddress);
  
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 
