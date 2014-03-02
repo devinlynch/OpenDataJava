@@ -70,7 +70,7 @@ public class CarRecallDataFetcher extends AbstractDataFetcher {
 			System.out.println("No new records");
 			return;
 		}
-		
+
 		nextLine = reader.readNext();
 
 		for (int i = 0; i < nextLine.length; i++) {
@@ -78,24 +78,32 @@ public class CarRecallDataFetcher extends AbstractDataFetcher {
 		}
 
 		while ((nextLine = reader.readNext()) != null) {
-				tempRecord = new DatasetRecord();
-				tempRecord.setDataset(dataset);
-				tempRecord.setCreationDate(new Date());
-				tempRecord.setExternalId(nextLine[0]);
-				for (int i = 0; i < nextLine.length; i++) {
-					tempValue = new DatasetValue();
-					tempValue.setDatasetInput(getInputForName(dataset,
-							header.get(i)));
-					if (tempValue.getDatasetInput() != null) {
-						tempValue.setDatasetRecord(tempRecord);
-						tempValue.setLastUpdated(new Date());
-						tempValue.setValue(nextLine[i]);
-						tempRecord.getValues().add(tempValue);
-					}
+			try{
+				if((Integer.parseInt(nextLine[0]) <= Integer
+									.parseInt(latestRecordId))){
+					continue;
 				}
-				getAccess().beginTransaction();
-				getAccess().save(tempRecord);
-				getAccess().commit();
+			} catch(Exception e){
+				continue;
+			}
+			tempRecord = new DatasetRecord();
+			tempRecord.setDataset(dataset);
+			tempRecord.setCreationDate(new Date());
+			tempRecord.setExternalId(nextLine[0]);
+			for (int i = 0; i < nextLine.length; i++) {
+				tempValue = new DatasetValue();
+				tempValue.setDatasetInput(getInputForName(dataset,
+						header.get(i)));
+				if (tempValue.getDatasetInput() != null) {
+					tempValue.setDatasetRecord(tempRecord);
+					tempValue.setLastUpdated(new Date());
+					tempValue.setValue(nextLine[i]);
+					tempRecord.getValues().add(tempValue);
+				}
+			}
+			getAccess().beginTransaction();
+			getAccess().save(tempRecord);
+			getAccess().commit();
 		}
 
 	}
