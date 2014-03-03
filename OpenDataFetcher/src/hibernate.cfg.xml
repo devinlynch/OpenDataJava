@@ -5,9 +5,9 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.password">kpass</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/total_recall</property>
-        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">verystrongpass</property>
+        <property name="hibernate.connection.url">jdbc:mysql://such-open-data.ctloijd4thzv.us-east-1.rds.amazonaws.com:3306/total_recall</property>
+        <property name="hibernate.connection.username">opendata</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.current_session_context_class">org.hibernate.context.internal.ThreadLocalSessionContext</property>
         <property name="show_sql">true</property>
