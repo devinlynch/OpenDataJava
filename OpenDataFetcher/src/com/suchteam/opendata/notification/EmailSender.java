@@ -4,11 +4,9 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -33,12 +31,14 @@ public class EmailSender extends Thread {
 			handleSendEmails();
 			
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(300000);
 			} catch (InterruptedException e) {
 				System.out.println("Shutdown notice received");
 				setStopped(true);
 			}
 		}
+		
+		getAccess().getSession().getSessionFactory().close();
 	}
 	
 	protected void handleSendEmails() {
