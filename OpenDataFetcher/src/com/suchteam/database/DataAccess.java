@@ -1,5 +1,6 @@
 package com.suchteam.database;
 
+import java.io.File;
 import java.util.List;
 
 import com.suchteam.opendata.*;
@@ -18,7 +19,7 @@ public class DataAccess {
 	public static void configure() {
 		if(sessionFactory== null) {
 			if(config == null) {
-				config = new Configuration().configure(); 
+				config = new Configuration().configure(new File(System.getProperty("hibernateFile", "src/hibernate.cfg.xml")));
 				addClassMappings();
 			}
 			
