@@ -7,6 +7,8 @@
             <generator class="native" />
         </id>
         <property name="externalId" column="external_id"></property>
+        <property name="creationDate" column="creation_date"></property>
+     
         <many-to-one class="com.suchteam.database.Dataset" name="dataset" column="dataset_id"/>
   
         <set name="values" table="dataset_value" cascade="all,delete-orphan">
