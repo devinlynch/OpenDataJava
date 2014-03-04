@@ -41,7 +41,7 @@ public class CarRecallDataFetcher extends AbstractDataFetcher {
 		try{
 			URL website = new URL(urlAddress);
 			ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-			FileOutputStream fos = new FileOutputStream(System.getProperty("csvDumpLocationAndName", "car_recall.csv"));
+			FileOutputStream fos = new FileOutputStream(System.getProperty("csvFilePath", "test.csv"));
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 			fos.close();
 		} catch(Exception e) {
@@ -80,7 +80,7 @@ public class CarRecallDataFetcher extends AbstractDataFetcher {
 		getAccess().commit();
 
 		try {
-			reader = new CSVReader(new FileReader("test.csv"));
+			reader = new CSVReader(new FileReader(System.getProperty("csvFilePath", "test.csv")));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
